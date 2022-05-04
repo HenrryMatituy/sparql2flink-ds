@@ -1,7 +1,6 @@
-import org.apache.jena.sparql.algebra.Op;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-
+import sparql2flinkhdt.mapper.LoadQueryFile;
 public class SPARQL2FlinkHDT {
     public static void main(String[] args) throws Exception {
         Path path=null;
@@ -14,8 +13,8 @@ public class SPARQL2FlinkHDT {
             path = Paths.get("./examples/query.rq");
         }
 
-//        LoadQueryFile queryFile = new LoadQueryFile(path.toString());
-//        String queryString = queryFile.loadSQFile();
+        LoadQueryFile queryFile = new LoadQueryFile(path.toString());
+        String queryString = queryFile.loadSQFile();
 //
 //        Query2LogicalQueryPlan query2LQP = new Query2LogicalQueryPlan(queryString);
 //        Op logicalQueryPlan = query2LQP.translationSQ2LQP();
