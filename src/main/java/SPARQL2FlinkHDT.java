@@ -4,14 +4,15 @@ import java.nio.file.Paths;
 import org.apache.jena.sparql.algebra.Op;
 import sparql2flinkhdt.mapper.LoadQueryFile;
 import sparql2flinkhdt.mapper.Query2LogicalQueryPlan;
+
 public class SPARQL2FlinkHDT {
     public static void main(String[] args) throws Exception {
-        Path path=null;
+        Path path = null;
 
         if (args != null && args.length == 1) {
             path = Paths.get(args[0]);
         } else {
-            System.out.println("\nYou should to specify path query file argument.\nFor example: path_query_file/query_file.rq\n"+
+            System.out.println("\nYou should to specify path query file argument.\nFor example: path_query_file/query_file.rq\n" +
                     "\nExecuting sample with default SPARQL query saved in << examples >> directory");
             path = Paths.get("./examples/query.rq");
         }
@@ -21,7 +22,8 @@ public class SPARQL2FlinkHDT {
 //
         Query2LogicalQueryPlan query2LQP = new Query2LogicalQueryPlan(queryString);
         Op logicalQueryPlan = query2LQP.translationSQ2LQP();
-      //  System.out.println(logicalQueryPlan);
+        System.out.println(logicalQueryPlan);
+        System.out.println("Aquí voy");
 
 //
 //        LogicalQueryPlan2FlinkProgram lQP2FlinkProgram = new LogicalQueryPlan2FlinkProgram(logicalQueryPlan, path);
