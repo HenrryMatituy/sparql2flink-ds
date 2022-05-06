@@ -22,10 +22,7 @@ public class SPARQL2FlinkHDT {
 //
         Query2LogicalQueryPlan query2LQP = new Query2LogicalQueryPlan(queryString);
         Op logicalQueryPlan = query2LQP.translationSQ2LQP();
-        System.out.println(logicalQueryPlan);
-        System.out.println("Aquí voy");
-
-//
+       //
 //        LogicalQueryPlan2FlinkProgram lQP2FlinkProgram = new LogicalQueryPlan2FlinkProgram(logicalQueryPlan, path);
 //        String flinkProgram = lQP2FlinkProgram.logicalQueryPlan2FlinkProgram();
 //
