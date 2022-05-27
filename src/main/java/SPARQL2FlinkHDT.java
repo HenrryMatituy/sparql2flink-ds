@@ -3,7 +3,6 @@ import java.nio.file.Paths;
 
 import org.apache.jena.sparql.algebra.Op;
 import sparql2flinkhdt.mapper.LoadQueryFile;
-import sparql2flinkhdt.mapper.LogicalQueryPlan2FlinkProgram;
 import sparql2flinkhdt.mapper.Query2LogicalQueryPlan;
 
 public class SPARQL2FlinkHDT {
@@ -23,12 +22,12 @@ public class SPARQL2FlinkHDT {
 //
         Query2LogicalQueryPlan query2LQP = new Query2LogicalQueryPlan(queryString);
         Op logicalQueryPlan = query2LQP.translationSQ2LQP();
-
-//        System.out.println("Aquí voy");
+        System.out.println(logicalQueryPlan);
+        System.out.println("Aquí voy");
 
 //
-        LogicalQueryPlan2FlinkProgram lQP2FlinkProgram = new LogicalQueryPlan2FlinkProgram(logicalQueryPlan, path);
-        String flinkProgram = lQP2FlinkProgram.logicalQueryPlan2FlinkProgram();
+//        LogicalQueryPlan2FlinkProgram lQP2FlinkProgram = new LogicalQueryPlan2FlinkProgram(logicalQueryPlan, path);
+//        String flinkProgram = lQP2FlinkProgram.logicalQueryPlan2FlinkProgram();
 //
 //        CreateFlinkProgram javaFlinkProgram = new CreateFlinkProgram(flinkProgram, path);
 //        javaFlinkProgram.createFlinkProgram();
