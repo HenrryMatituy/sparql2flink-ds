@@ -65,7 +65,7 @@ public class FilterConvert {
         return exp;
     }
 
-	public static String convert(E_LessThan expression) {
+    public static String convert(E_LessThan expression) {
         String exp = "";
         if(expression.getArg2().isConstant()) {
             exp = "(< "+expression.getArg1()+" "+convertArgument(expression.getArg2().getConstant())+")";
@@ -73,7 +73,7 @@ public class FilterConvert {
             exp = expression.toString();
         }
         return exp;
-	}
+    }
 
     public static String convert(E_LogicalAnd expression) {
         return "(&& "+convert(expression.getArg1())+" "+convert(expression.getArg2())+")";
