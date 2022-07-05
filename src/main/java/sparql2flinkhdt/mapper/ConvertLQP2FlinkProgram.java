@@ -23,7 +23,7 @@ public class ConvertLQP2FlinkProgram extends OpVisitorBase {
     @Override
     public void visit(OpBGP opBGP) {
         List<Triple> listTriplePatterns = opBGP.getPattern().getList();
-        flinkProgram += sparql2flinkhdt.mapper.ConvertTriplePatternGroup.convert(listTriplePatterns);
+        flinkProgram += ConvertTriplePatternGroup.convert(listTriplePatterns);
     }
 
     @Override
@@ -32,30 +32,30 @@ public class ConvertLQP2FlinkProgram extends OpVisitorBase {
         Op opRight = opJoin.getRight();
 
         opLeft.visit(this);
-        int indice_sm_left = sparql2flinkhdt.mapper.SolutionMapping.getIndice()-1;
+        int indice_sm_left = SolutionMapping.getIndice()-1;
 
         opRight.visit(this);
-        int indice_sm_right = sparql2flinkhdt.mapper.SolutionMapping.getIndice()-1;
+        int indice_sm_right = SolutionMapping.getIndice()-1;
 
-        int indice_sm_join = sparql2flinkhdt.mapper.SolutionMapping.getIndice();
+        int indice_sm_join = SolutionMapping.getIndice();
 
-        ArrayList<String> listKeys = sparql2flinkhdt.mapper.SolutionMapping.getKey(indice_sm_left, indice_sm_right);
+        ArrayList<String> listKeys = SolutionMapping.getKey(indice_sm_left, indice_sm_right);
 
         if(listKeys.size()>0) {
             String keys = JoinKeys.keys(listKeys);
-            flinkProgram += "\t\tDataSet<SolutionMapping> sm" + indice_sm_join + " = sm" + indice_sm_left + ".join(sm" + indice_sm_right + ")\n" +
+            flinkProgram += "\t\tDataStream<SolutionMapping> sm" + indice_sm_join + " = sm" + indice_sm_left + ".join(sm" + indice_sm_right + ")\n" +
                     "\t\t\t.where(new JoinKeySelector(new String[]{"+keys+"}))\n" +
                     "\t\t\t.equalTo(new JoinKeySelector(new String[]{"+keys+"}))\n" +
                     "\t\t\t.with(new Join());" +
                     "\n\n";
         }
         else {
-            flinkProgram += "\t\tDataSet<SolutionMapping> sm" + indice_sm_join + " = sm" + indice_sm_left + ".cross(sm" + indice_sm_right + ")\n" +
+            flinkProgram += "\t\tDataStream<SolutionMapping> sm" + indice_sm_join + " = sm" + indice_sm_left + ".cross(sm" + indice_sm_right + ")\n" +
                     "\t\t\t.with(new Cross());" +
                     "\n\n";
-            }
+        }
 
-        sparql2flinkhdt.mapper.SolutionMapping.join(indice_sm_join, indice_sm_left, indice_sm_right);
+        SolutionMapping.join(indice_sm_join, indice_sm_left, indice_sm_right);
     }
 
     @Override
@@ -64,30 +64,30 @@ public class ConvertLQP2FlinkProgram extends OpVisitorBase {
         Op opRight = opLeftJoin.getRight();
 
         opLeft.visit(this);
-        int indice_sm_left = sparql2flinkhdt.mapper.SolutionMapping.getIndice()-1;
+        int indice_sm_left = SolutionMapping.getIndice()-1;
 
         opRight.visit(this);
-        int indice_sm_right = sparql2flinkhdt.mapper.SolutionMapping.getIndice()-1;
+        int indice_sm_right = SolutionMapping.getIndice()-1;
 
-        int indice_sm_join = sparql2flinkhdt.mapper.SolutionMapping.getIndice();
+        int indice_sm_join = SolutionMapping.getIndice();
 
-        ArrayList<String> listKeys = sparql2flinkhdt.mapper.SolutionMapping.getKey(indice_sm_left, indice_sm_right);
+        ArrayList<String> listKeys = SolutionMapping.getKey(indice_sm_left, indice_sm_right);
 
         if(listKeys.size()>0) {
             String keys = JoinKeys.keys(listKeys);
-            flinkProgram += "\t\tDataSet<SolutionMapping> sm" + indice_sm_join + " = sm" + indice_sm_left + ".leftOuterJoin(sm" + indice_sm_right + ")\n" +
+            flinkProgram += "\t\tDataStream<SolutionMapping> sm" + indice_sm_join + " = sm" + indice_sm_left + ".leftOuterJoin(sm" + indice_sm_right + ")\n" +
                     "\t\t\t.where(new JoinKeySelector(new String[]{"+keys+"}))\n" +
                     "\t\t\t.equalTo(new JoinKeySelector(new String[]{"+keys+"}))\n" +
                     "\t\t\t.with(new LeftJoin());" +
                     "\n\n";
         }
         else {
-            flinkProgram += "\t\tDataSet<SolutionMapping> sm"+indice_sm_join+" = sm"+indice_sm_left+".cross(sm"+indice_sm_right+")\n" +
+            flinkProgram += "\t\tDataStream<SolutionMapping> sm"+indice_sm_join+" = sm"+indice_sm_left+".cross(sm"+indice_sm_right+")\n" +
                     "\t\t\t.with(new Cross());" +
                     "\n\n";
         }
 
-        sparql2flinkhdt.mapper.SolutionMapping.join(indice_sm_join, indice_sm_left, indice_sm_right);
+        SolutionMapping.join(indice_sm_join, indice_sm_left, indice_sm_right);
 
         if(opLeftJoin.getExprs() != null) {
             this.visit(opLeftJoin.getExprs());
@@ -100,17 +100,17 @@ public class ConvertLQP2FlinkProgram extends OpVisitorBase {
         Op opRight = opUnion.getRight();
 
         opLeft.visit(this);
-        int indice_sm_left = sparql2flinkhdt.mapper.SolutionMapping.getIndice()-1;
+        int indice_sm_left = SolutionMapping.getIndice()-1;
 
         opRight.visit(this);
-        int indice_sm_right = sparql2flinkhdt.mapper.SolutionMapping.getIndice()-1;
+        int indice_sm_right = SolutionMapping.getIndice()-1;
 
-        int indice_sm_join = sparql2flinkhdt.mapper.SolutionMapping.getIndice();
+        int indice_sm_join = SolutionMapping.getIndice();
 
-        flinkProgram += "\t\tDataSet<SolutionMapping> sm"+indice_sm_join+" = sm"+indice_sm_left+".union(sm"+indice_sm_right+");" +
+        flinkProgram += "\t\tDataStream<SolutionMapping> sm"+indice_sm_join+" = sm"+indice_sm_left+".union(sm"+indice_sm_right+");" +
                 "\n\n";
 
-        sparql2flinkhdt.mapper.SolutionMapping.join(indice_sm_join, indice_sm_left, indice_sm_right);
+        SolutionMapping.join(indice_sm_join, indice_sm_left, indice_sm_right);
     }
 
     @Override
@@ -130,10 +130,10 @@ public class ConvertLQP2FlinkProgram extends OpVisitorBase {
 
         opProject.getSubOp().visit(this);
 
-        flinkProgram += "\t\tDataSet<SolutionMapping> sm"+(sparql2flinkhdt.mapper.SolutionMapping.getIndice())+" = sm"+(sparql2flinkhdt.mapper.SolutionMapping.getIndice()-1)+"\n" +
+        flinkProgram += "\t\tDataStream<SolutionMapping> sm"+(SolutionMapping.getIndice())+" = sm"+(SolutionMapping.getIndice()-1)+"\n" +
                 "\t\t\t.map(new Project(new String[]{"+varsProject+"}));\n\n";
 
-        sparql2flinkhdt.mapper.SolutionMapping.insertSolutionMapping(sparql2flinkhdt.mapper.SolutionMapping.getIndice(), variables);
+        SolutionMapping.insertSolutionMapping(SolutionMapping.getIndice(), variables);
     }
 
     @Override
@@ -141,23 +141,23 @@ public class ConvertLQP2FlinkProgram extends OpVisitorBase {
         ExprList exprList = opFilter.getExprs();
         opFilter.getSubOp().visit(this);
         for ( Expr expression : exprList ) {
-            flinkProgram += "\t\tDataSet<SolutionMapping> sm"+(sparql2flinkhdt.mapper.SolutionMapping.getIndice())+" = sm"+(sparql2flinkhdt.mapper.SolutionMapping.getIndice()-1)+"\n" +
-                    "\t\t\t.filter(new Filter(\""+ sparql2flinkhdt.mapper.FilterConvert.convert(expression)+"\"));\n\n";
+            flinkProgram += "\t\tDataStream<SolutionMapping> sm"+(SolutionMapping.getIndice())+" = sm"+(SolutionMapping.getIndice()-1)+"\n" +
+                    "\t\t\t.filter(new Filter(\""+FilterConvert.convert(expression)+"\"));\n\n";
 
-            ArrayList<String> variables = sparql2flinkhdt.mapper.SolutionMapping.getSolutionMapping().get(sparql2flinkhdt.mapper.SolutionMapping.getIndice()-1);
+            ArrayList<String> variables = SolutionMapping.getSolutionMapping().get(SolutionMapping.getIndice()-1);
 
-            sparql2flinkhdt.mapper.SolutionMapping.insertSolutionMapping(sparql2flinkhdt.mapper.SolutionMapping.getIndice(), variables);
+            SolutionMapping.insertSolutionMapping(SolutionMapping.getIndice(), variables);
         }
     }
 
     public void visit(ExprList exprList) {
         for ( Expr expression : exprList ) {
-            flinkProgram += "\t\tDataSet<SolutionMapping> sm"+(sparql2flinkhdt.mapper.SolutionMapping.getIndice())+" = sm"+(sparql2flinkhdt.mapper.SolutionMapping.getIndice()-1)+"\n" +
-                    "\t\t\t.filter(new Filter(\""+ sparql2flinkhdt.mapper.FilterConvert.convert(expression)+"\"));\n\n";
+            flinkProgram += "\t\tDataStream<SolutionMapping> sm"+(SolutionMapping.getIndice())+" = sm"+(SolutionMapping.getIndice()-1)+"\n" +
+                    "\t\t\t.filter(new Filter(\""+FilterConvert.convert(expression)+"\"));\n\n";
 
-            ArrayList<String> variables = sparql2flinkhdt.mapper.SolutionMapping.getSolutionMapping().get(sparql2flinkhdt.mapper.SolutionMapping.getIndice()-1);
+            ArrayList<String> variables = SolutionMapping.getSolutionMapping().get(SolutionMapping.getIndice()-1);
 
-            sparql2flinkhdt.mapper.SolutionMapping.insertSolutionMapping(sparql2flinkhdt.mapper.SolutionMapping.getIndice(), variables);
+            SolutionMapping.insertSolutionMapping(SolutionMapping.getIndice(), variables);
         }
     }
 
@@ -165,12 +165,12 @@ public class ConvertLQP2FlinkProgram extends OpVisitorBase {
     public void visit(OpDistinct opDistinct) {
         opDistinct.getSubOp().visit(this);
 
-        flinkProgram += "\t\tDataSet<SolutionMapping> sm"+(sparql2flinkhdt.mapper.SolutionMapping.getIndice())+" = sm"+(sparql2flinkhdt.mapper.SolutionMapping.getIndice()-1)+"\n" +
+        flinkProgram += "\t\tDataStream<SolutionMapping> sm"+(SolutionMapping.getIndice())+" = sm"+(SolutionMapping.getIndice()-1)+"\n" +
                 "\t\t\t.distinct(new DistinctKeySelector());\n\n";
 
-        ArrayList<String> variables = sparql2flinkhdt.mapper.SolutionMapping.getSolutionMapping().get(sparql2flinkhdt.mapper.SolutionMapping.getIndice()-1);
+        ArrayList<String> variables = SolutionMapping.getSolutionMapping().get(SolutionMapping.getIndice()-1);
 
-        sparql2flinkhdt.mapper.SolutionMapping.insertSolutionMapping(sparql2flinkhdt.mapper.SolutionMapping.getIndice(), variables);
+        SolutionMapping.insertSolutionMapping(SolutionMapping.getIndice(), variables);
     }
 
     @Override
@@ -188,12 +188,12 @@ public class ConvertLQP2FlinkProgram extends OpVisitorBase {
 
         Expr expression = sortCondition.get(0).getExpression();
 
-        flinkProgram += "\t\tDataSet<SolutionMapping> sm"+ sparql2flinkhdt.mapper.SolutionMapping.getIndice()+" = sm"+(sparql2flinkhdt.mapper.SolutionMapping.getIndice()-1)+"\n" +
+        flinkProgram += "\t\tDataStream<SolutionMapping> sm"+SolutionMapping.getIndice()+" = sm"+(SolutionMapping.getIndice()-1)+"\n" +
                 "\t\t\t\t\t.sortPartition(new OrderKeySelector(\""+expression+"\"), "+order+")\n" +
                 "\t\t\t\t\t.setParallelism(1);\n" +
                 "\t\n";
 
-        /*flinkProgram += "\t\tDataSet<SolutionMapping> sm"+SolutionMapping.getIndice()+";\n" +
+        /*flinkProgram += "\t\tDataStream<SolutionMapping> sm"+SolutionMapping.getIndice()+";\n" +
                 "\t\tNode node = sm"+(SolutionMapping.getIndice()-1)+".collect().get(0).getValue(\""+expression+"\");\n" +
                 "\t\tif(node.isLiteral()) {\n" +
                 "\t\t\tif(node.getLiteralValue().getClass().equals(BigDecimal.class) || node.getLiteralValue().getClass().equals(Double.class)){\n" +
@@ -223,9 +223,9 @@ public class ConvertLQP2FlinkProgram extends OpVisitorBase {
                 "\t\t\t\t\t.setParallelism(1);\n" +
                 "\t\t}\n\n";*/
 
-        ArrayList<String> variables = sparql2flinkhdt.mapper.SolutionMapping.getSolutionMapping().get(sparql2flinkhdt.mapper.SolutionMapping.getIndice()-1);
+        ArrayList<String> variables = SolutionMapping.getSolutionMapping().get(SolutionMapping.getIndice()-1);
 
-        sparql2flinkhdt.mapper.SolutionMapping.insertSolutionMapping(sparql2flinkhdt.mapper.SolutionMapping.getIndice(), variables);
+        SolutionMapping.insertSolutionMapping(SolutionMapping.getIndice(), variables);
     }
 
 
@@ -233,12 +233,12 @@ public class ConvertLQP2FlinkProgram extends OpVisitorBase {
     public void visit(OpSlice opSlice) {
         opSlice.getSubOp().visit(this);
 
-        flinkProgram += "\t\tDataSet<SolutionMapping> sm"+(sparql2flinkhdt.mapper.SolutionMapping.getIndice())+" = sm"+(sparql2flinkhdt.mapper.SolutionMapping.getIndice()-1)+"\n" +
+        flinkProgram += "\t\tDataStream<SolutionMapping> sm"+(SolutionMapping.getIndice())+" = sm"+(SolutionMapping.getIndice()-1)+"\n" +
                 "\t\t\t.first("+opSlice.getLength()+");\n\n";
 
-        ArrayList<String> variables = sparql2flinkhdt.mapper.SolutionMapping.getSolutionMapping().get(sparql2flinkhdt.mapper.SolutionMapping.getIndice()-1);
+        ArrayList<String> variables = SolutionMapping.getSolutionMapping().get(SolutionMapping.getIndice()-1);
 
-        sparql2flinkhdt.mapper.SolutionMapping.insertSolutionMapping(sparql2flinkhdt.mapper.SolutionMapping.getIndice(), variables);
+        SolutionMapping.insertSolutionMapping(SolutionMapping.getIndice(), variables);
     }
 
     public static String getFlinkProgram(){
