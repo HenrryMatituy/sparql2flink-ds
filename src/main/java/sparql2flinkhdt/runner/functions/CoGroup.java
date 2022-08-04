@@ -11,17 +11,5 @@ public class CoGroup implements CoGroupFunction<SolutionMapping, SolutionMapping
     @Override
      public void coGroup(Iterable<SolutionMapping> left, Iterable<SolutionMapping> right, Collector<SolutionMapping> out) throws Exception {
         out.collect(left.iterator().next());
-
-        //    out.collect(left.coGroup(right));
-
-//        out.collect(new SolutionMapping());
-
-        //        out.collect(new SolutionMapping().leftJoin(right));
-        //     out.collect(coGroupF.(right));
-
-//        System.out.println(collector.toString().toString());
-
     }
-
-
 }

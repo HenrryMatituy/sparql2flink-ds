@@ -3,7 +3,6 @@ package sparql2flinkhdt.out;
 //import org.apache.flink.streaming.api.scala.*;
 //import org.apache.flink.streaming.api.scala.extensions._;
 
-import org.apache.flink.streaming.api.windowing.assigners.TumblingEventTimeWindows;
 import org.apache.flink.streaming.api.windowing.assigners.TumblingProcessingTimeWindows;
 import org.apache.flink.streaming.api.windowing.time.Time;
 
@@ -57,7 +56,7 @@ public class Queryf {
                 .where(new JoinKeySelector(new String[]{"?person"}))
                 .equalTo(new JoinKeySelector(new String[]{"?person"}))
                 .window(TumblingProcessingTimeWindows.of(Time.seconds(30)))
-              .apply (new CoGroup());
+                .apply (new CoGroup());
 //                .apply(new CoGroupFunction<DataStream<SolutionMapping>, DataStream<SolutionMapping>, DataStream<SolutionMapping>>() {
 //                    //@Override
 //                    public void coGroup(Iterable<DataStream<SolutionMapping>> left, Iterable<DataStream<SolutionMapping>> right, Collector<DataStream<SolutionMapping>> collector) throws Exception {
