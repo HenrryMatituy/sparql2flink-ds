@@ -47,85 +47,11 @@ public class Query {
 //			.equalTo(new JoinKeySelector(new String[]{"?person"}))
 //			.with(new LeftJoin());
 
-//         CoGroupedStreams.WithWindow<SolutionMapping, SolutionMapping, String, TimeWindow> sm3 = sm1.coGroup(sm2)
-//                .where(new JoinKeySelector(new String[]{"?person"}))
-//                .equalTo(new JoinKeySelector(new String[]{"?person"}))
-//                .window(TumblingEventTimeWindows.of(Time.of(5, TimeUnit.SECONDS)));
-
         DataStream<SolutionMapping> sm3 = sm1.coGroup(sm2)
                 .where(new JoinKeySelector(new String[]{"?person"}))
                 .equalTo(new JoinKeySelector(new String[]{"?person"}))
                 .window(TumblingProcessingTimeWindows.of(Time.seconds(30)))
                 .apply (new CoGroup());
-//                .apply(new CoGroupFunction<DataStream<SolutionMapping>, DataStream<SolutionMapping>, DataStream<SolutionMapping>>() {
-//                    //@Override
-//                    public void coGroup(Iterable<DataStream<SolutionMapping>> left, Iterable<DataStream<SolutionMapping>> right, Collector<DataStream<SolutionMapping>> collector) throws Exception {
-//
-//
-//                        collector.collect(left,right);
-//                    }
-//                })
-//                .print();
-
-
-
-
-
-//                  .window(TumblingEventTimeWindows.of(Time);
-
-
-//                .apply(new MyCoGroupFunction());
-//
-//        sm1.coGroup(sm2)
-//                .where(new JoinKeySelector(new String[]{"?person"}))
-//                .equalTo(new JoinKeySelector(new String[]{"?person"}))
-//                .window(TumblingProcessingTimeWindows.of(Time.milliseconds(30)))
-//                .apply(someCoGroupFunction)
-//                .sinkTo(someSink);
-
-//
-//        stream1.coGroup(stream2)
-//                .where(stream1Item -> streamItem.field1)
-//                .equalTo(stream2Item -> stream2Item.field1)
-//                .window(TumblingProcessingTimeWindows.of(Time.milliseconds(30)))
-//                .apply(someCoGroupFunction)
-//                .sinkTo(someSink);
-//
-//        DataStream<Tuple2<String, Integer>> in = ...;
-//        KeyedStream<Tuple2<String, Integer>, String> keyed = in.keyBy(...);
-//        WindowedStream<Tuple2<String, Integer>, String, TimeWindow> windowed =
-//                keyed.window(TumblingEventTimeWindows.of(Time.minutes(1)));
-
-//        sm1.coGroup(sm2)
-//                .where(new JoinKeySelector(new String[]{"?person"}))
-//                .equalTo(new JoinKeySelector(new String[]{"?person"}))
-//                .window(TumblingProcessingTimeWindows.of(Time.milliseconds(30)));
-
-//        sm1.coGroup(sm2)
-//                .where(new JoinKeySelector(new String[]{"?person"}))
-//              .equalTo(new JoinKeySelector(new String[]{"?person"}))
-//        .window(CoGroupedStreams<sm1>.Wi)
-//        .apply(new MyCoGroupFunction());
-
-
-//        sm1.coGroup(sm2)
-//                .where(new JoinKeySelector(new String[]{"?person"}))
-//                .equalTo(new JoinKeySelector(new String[]{"?person"}))
-//                .window(TumblingEventTimeWindows.of(Time.minutes(Constants.)))
-//                .evictor(TimeEvictor.of(Time.minutes(Constants.VALIDTY_WINDOW_MIN)))
-//                .apply(new CalculateCoGroupFunction());
-
-
-//				.window(TumblingEventTimeWindows.of(Time.milliseconds(1)));
-//				.window( TumblingEventTimeWindows.of(Time.of(3, TimeUnit.SECONDS)),new TimeWindow.Serializer());
-//				.window(TumblingEventTimeWindows.of(Time.seconds(3)));
-
-//		CoGroupedStreams.WithWindow<SolutionMapping, SolutionMapping, String, TimeWindow> sm3 = sm1.coGroup(sm2)
-//				.where(new JoinKeySelector(new String[]{"?person"}))
-//				.equalTo(new JoinKeySelector(new String[]{"?person"}))
-//				.window(TumblingEventTimeWindows.of(Time.seconds(3)));
-
-
 
         DataStream<SolutionMapping> sm4 = sm3
                 .map(new Project(new String[]{"?person", "?name", "?mbox"}));
