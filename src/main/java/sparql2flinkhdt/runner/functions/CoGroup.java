@@ -9,20 +9,12 @@ import java.util.Map;
 public class CoGroup implements CoGroupFunction<SolutionMapping, SolutionMapping, SolutionMapping> {
     @Override
     public void coGroup(Iterable<SolutionMapping> left, Iterable<SolutionMapping> right, Collector<SolutionMapping> out) throws Exception {
-//    out.collect(left.iterator().next());
+  out.collect(left.iterator().next());
 //        out.collect(right.CoGroupp(left));
+//        out.collect(new SolutionMapping());
 
           }
 
-//    public CoGroup coGroupp(SolutionMapping sm) {
-//        if(sm != null) {
-//            for (Map.Entry<String, Node> hm : sm.getMapping().entrySet()) {
-//                if (!existMapping(hm.getKey(), hm.getValue())) {
-//                    this.putMapping(hm.getKey(), hm.getValue());
-//                }
-//            }
-//        }
-//        return this;
-//    }
+
 }
 
