@@ -1,3 +1,0 @@
-?name-->"Charlie"^^http://www.w3.org/2001/XMLSchema#string	?person-->http://example.org/charlie	
-?name-->"Bob"^^http://www.w3.org/2001/XMLSchema#string	?person-->http://example.org/bob	
-?name-->"Alice"^^http://www.w3.org/2001/XMLSchema#string	?person-->http://example.org/alice	
