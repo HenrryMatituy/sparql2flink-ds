@@ -51,7 +51,6 @@ public class Query {
                 .trigger(CountTrigger.of(5))
                 .apply(new CoGroup());
 
-
         DataStream<SolutionMapping> sm4 = sm3
                 .map(new Project(new String[]{"?person", "?name", "?mbox"}));
 
