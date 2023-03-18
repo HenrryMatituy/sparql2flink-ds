@@ -1,6 +1,6 @@
 # SPARQL2Flin-DS
 
-AA La librería [SPARQL2Flink](https://github.com/oscarceballos/sparql2flink), desarrollada 
+La librería [SPARQL2Flink](https://github.com/oscarceballos/sparql2flink), desarrollada 
 por el doctor Oscar Ceballos Argote, permite el procesamiento de consultas SPARQL sobre grandes conjuntos de 
 datos  RDF en un clúster Apache Flink. Previamente, se desarrolló una prueba de concepto sobre SPARQL2Flink, 
 realizando una actualización de la librería, a la que se denominó [SPARQL2Flink-hdt](https://github.
