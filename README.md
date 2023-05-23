@@ -1,15 +1,7 @@
 # SPARQL2FlinkHDT
 
-La librería [SPARQL2Flink](https://github.com/oscarceballos/sparql2flink), desarrollada 
-por el doctor Oscar Ceballos Argote, permite el procesamiento de consultas SPARQL sobre grandes conjuntos de 
-datos  RDF en un clúster Apache Flink. Previamente, se desarrolló una prueba de concepto sobre SPARQL2Flink, 
-realizando una actualización de la librería, a la que se denominó [SPARQL2Flink-hdt](https://github.
-com/oscarceballos/sparql2flink-hdt.git). En esta nueva propuesta se logró realizar el procesamiento de consultas SPARQL 
-sobre la librería original pero esta vez utilizando la técnica de serialización HDT. Sin embargo...
-
-Este proyecto toma como base la prueba de concepto mencionada anteriormente, con el objetivo de extender la 
-librería SPARQL2Flink con una técnica de serialización basada en HDT con el fin de reducir el 
-tiempo de carga del RDF dataset en memoria RAM y los tiempos de respuesta de una consulta SPARQL.
+La librería [SPARQL2Flink-ds](https://github.com/oscarceballos/sparql2flink), es una prueba de concepto, sobre la librería original desarrollada 
+por el doctor Oscar Ceballos Argote, donde se busca que la librería trabaje con la API DataString de Apache Flink 1.14.0 en lugar de la API Data Set de Flink 1.10.0
 
 
 [//]: # (## References)
