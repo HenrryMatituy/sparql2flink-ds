@@ -9,6 +9,9 @@ import org.apache.flink.api.java.utils.ParameterTool;
 import org.apache.flink.core.fs.FileSystem;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
+import org.apache.flink.streaming.api.functions.co.CoFlatMapFunction;
+import org.apache.flink.streaming.api.functions.co.CoProcessFunction;
+import org.apache.flink.util.OutputTag;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
 import sparql2flinkhdt.runner.functions.*;
@@ -21,7 +24,6 @@ import java.util.List;
 import org.apache.flink.api.common.RuntimeExecutionMode;
 
 
-import  org.apache.flink.api.java.functions.CoGroupFunction;
 import org.apache.flink.util.Collector;
 
 public class Query {
@@ -47,60 +49,129 @@ public class Query {
 			.filter(new Triple2Triple(null, "http://xmlns.com/foaf/0.1/mbox", null))
 			.map(new Triple2SolutionMapping("?person", null, "?mbox"));
 
+//		FUNCIONA A MEDIAS
+	/*	DataStream<SolutionMapping> sm3 = sm1
+				.keyBy(new JoinKeySelector(new String[]{"?person"}))
+				.connect(sm2.keyBy(new JoinKeySelector(new String[]{"?person"})))
+				.process(new CoProcessFunction<SolutionMapping, SolutionMapping, SolutionMapping>() {
+					List<SolutionMapping> leftList = new ArrayList<>();
+					List<SolutionMapping> rightList = new ArrayList<>();
 
-/*DataStream<SolutionMapping> sm3 = sm1.leftOuterJoin(sm2)
-			.where(new JoinKeySelector(new String[]{"?person"}))
-			.equalTo(new JoinKeySelector(new String[]{"?person"}))
-			.with(new LeftJoin());*/
+					@Override
+					public void processElement1(SolutionMapping left, Context ctx, Collector<SolutionMapping> out) throws Exception {
+						leftList.add(left);
+						for (SolutionMapping right : rightList) {
+							SolutionMapping join = left.join(right);
+							if (join != null) {
+								out.collect(join);
+							}
+						}
+					}
 
-//		DataStream<SolutionMapping> sm3 = sm1
-//				.keyBy(new JoinKeySelector(new String[]{"?person"}))
-//				.coGroup(sm2.keyBy(new JoinKeySelector(new String[]{"?person"})))
-//				.where(new JoinKeySelector(new String[]{"?person"}))
-//				.equalTo(new JoinKeySelector(new String[]{"?person"}))
-//				.equalFields("predicate")
-//				.with(new LeftJoin());
+					@Override
+					public void processElement2(SolutionMapping right, Context ctx, Collector<SolutionMapping> out) throws Exception {
+						rightList.add(right);
+						for (SolutionMapping left : leftList) {
+							SolutionMapping join = left.join(right);
+							if (join != null) {
+								out.collect(join);
+							}
+						}
+					}
+				});
+*/
 
-//		DataStream<SolutionMapping> sm3 = sm1
-//				.keyBy(new JoinKeySelector(new String[]{"?person"}))
-//				.coGroup(sm2.keyBy(new JoinKeySelector(new String[]{"?person"})))
-//				.where(new JoinKeySelector(new String[]{"?person"}))
-//				.equalTo(new JoinKeySelector(new String[]{"?person"}))
-//				.withFields("predicate")
-//				.with(new LeftJoin());
-
-//		DataStream<SolutionMapping> sm3 = sm1
-//				.keyBy(new JoinKeySelector(new String[]{"?person"}))
-//				.coGroup(sm2.keyBy(new JoinKeySelector(new String[]{"?person"})))
-//				.where(new JoinKeySelector(new String[]{"?person"}))
-//				.equalTo(new JoinKeySelector(new String[]{"?person"}))
-//				.select("predicate")
-//				.with(new LeftJoin());
-
-
-//		DataStream<SolutionMapping> sm3 = sm1
-//				.keyBy(new JoinKeySelector(new String[]{"?person"}))
-//				.coGroup(sm2.keyBy(new JoinKeySelector(new String[]{"?person"})))
-//				.where(new JoinKeySelector(new String[]{"?person"}))
-//				.equalTo(new JoinKeySelector(new String[]{"?person"}))
-//				.project("predicate")
-//				.with(new LeftJoin());
-
-//		DataStream<SolutionMapping> sm3 = sm1
-//				.keyBy(new JoinKeySelector(new String[]{"?person"}))
-//				.coGroup(sm2.keyBy(new JoinKeySelector(new String[]{"?person"})))
-//				.where(new JoinKeySelector(new String[]{"?person"}))
-//				.equalTo(new JoinKeySelector(new String[]{"?person"}))
-//				.fields("predicate")
-//				.with(new LeftJoin());
+/* FUNCIONA A MEDIAS 2
 
 		DataStream<SolutionMapping> sm3 = sm1
 				.keyBy(new JoinKeySelector(new String[]{"?person"}))
-				.coGroup(sm2.keyBy(new JoinKeySelector(new String[]{"?person"})))
-				.where(new JoinKeySelector(new String[]{"?person"}))
-				.equalTo(new JoinKeySelector(new String[]{"?person"}))
-				.project("predicate")
-				.with(new LeftJoin());
+				.connect(sm2.keyBy(new JoinKeySelector(new String[]{"?person"})))
+				.process(new CoProcessFunction<SolutionMapping, SolutionMapping, SolutionMapping>() {
+					List<SolutionMapping> leftList = new ArrayList<>();
+					List<SolutionMapping> rightList = new ArrayList<>();
+
+					@Override
+					public void processElement1(SolutionMapping left, Context ctx, Collector<SolutionMapping> out) throws Exception {
+						leftList.add(left);
+						for (SolutionMapping right : rightList) {
+							SolutionMapping join = left.join(right);
+							if (join != null) {
+								out.collect(join);
+							}
+						}
+					}
+
+					@Override
+					public void processElement2(SolutionMapping right, Context ctx, Collector<SolutionMapping> out) throws Exception {
+						rightList.add(right);
+						for (SolutionMapping left : leftList) {
+							SolutionMapping join = left.join(right);
+							if (join != null) {
+								out.collect(join);
+							}
+						}
+					}
+
+					@Override
+					public void onTimer(long timestamp, OnTimerContext ctx, Collector<SolutionMapping> out) throws Exception {
+						for (SolutionMapping left : leftList) {
+							boolean matched = false;
+							for (SolutionMapping right : rightList) {
+								SolutionMapping join = left.join(right);
+								if (join != null) {
+									out.collect(join);
+									matched = true;
+								}
+							}
+							if (!matched) {
+								out.collect(left);
+							}
+						}
+						leftList.clear();
+						rightList.clear();
+					}
+				});
+*/
+
+		DataStream<SolutionMapping> sm3 = sm1.keyBy(new JoinKeySelector(new String[]{"?person"}))
+				.connect(sm2.keyBy(new JoinKeySelector(new String[]{"?person"})))
+				.flatMap(new CoFlatMapFunction<SolutionMapping, SolutionMapping, SolutionMapping>() {
+					final OutputTag<SolutionMapping> unmatchedSM2Tag = new OutputTag<SolutionMapping>("unmatchedSM2"){};
+
+					@Override
+					public void flatMap1(SolutionMapping sm1, Collector<SolutionMapping> out) throws Exception {
+						boolean matchFound = false;
+						for(SolutionMapping sm2: sm2States.get()){
+							if(sm1.get("?person").equals(sm2.get("?person"))){
+								SolutionMapping combinedSM = new SolutionMapping();
+								combinedSM.addAll(sm1);
+								combinedSM.addAll(sm2);
+								out.collect(combinedSM);
+								matchFound = true;
+							}
+						}
+						if (!matchFound) {
+							out.getSideOutput(unmatchedSM2Tag).collect(sm1);
+						}
+					}
+
+					@Override
+					public void flatMap2(SolutionMapping sm2, Collector<SolutionMapping> out) throws Exception {
+						boolean matchFound = false;
+						for(SolutionMapping sm1: sm1States.get()){
+							if(sm1.get("?person").equals(sm2.get("?person"))){
+								matchFound = true;
+							}
+						}
+						if (!matchFound) {
+							out.getSideOutput(unmatchedSM2Tag).collect(sm2);
+						}
+					}
+				}).returns(new TypeHint<SolutionMapping>(){})
+				.union(sm2.getSideOutput(unmatchedSM2Tag));
+
+
+
 
 		DataStream<SolutionMapping> sm4 = sm3
 				.map(new Project(new String[]{"?person", "?name", "?mbox"}));
@@ -523,3 +594,48 @@ public class Query {
 //						}
 //					}
 //				});
+/*DataStream<SolutionMapping> sm3 = sm1.leftOuterJoin(sm2)
+			.where(new JoinKeySelector(new String[]{"?person"}))
+			.equalTo(new JoinKeySelector(new String[]{"?person"}))
+			.with(new LeftJoin());*/
+
+//		DataStream<SolutionMapping> sm3 = sm1
+//				.keyBy(new JoinKeySelector(new String[]{"?person"}))
+//				.coGroup(sm2.keyBy(new JoinKeySelector(new String[]{"?person"})))
+//				.where(new JoinKeySelector(new String[]{"?person"}))
+//				.equalTo(new JoinKeySelector(new String[]{"?person"}))
+//				.equalFields("predicate")
+//				.with(new LeftJoin());
+
+//		DataStream<SolutionMapping> sm3 = sm1
+//				.keyBy(new JoinKeySelector(new String[]{"?person"}))
+//				.coGroup(sm2.keyBy(new JoinKeySelector(new String[]{"?person"})))
+//				.where(new JoinKeySelector(new String[]{"?person"}))
+//				.equalTo(new JoinKeySelector(new String[]{"?person"}))
+//				.withFields("predicate")
+//				.with(new LeftJoin());
+
+//		DataStream<SolutionMapping> sm3 = sm1
+//				.keyBy(new JoinKeySelector(new String[]{"?person"}))
+//				.coGroup(sm2.keyBy(new JoinKeySelector(new String[]{"?person"})))
+//				.where(new JoinKeySelector(new String[]{"?person"}))
+//				.equalTo(new JoinKeySelector(new String[]{"?person"}))
+//				.select("predicate")
+//				.with(new LeftJoin());
+
+
+//		DataStream<SolutionMapping> sm3 = sm1
+//				.keyBy(new JoinKeySelector(new String[]{"?person"}))
+//				.coGroup(sm2.keyBy(new JoinKeySelector(new String[]{"?person"})))
+//				.where(new JoinKeySelector(new String[]{"?person"}))
+//				.equalTo(new JoinKeySelector(new String[]{"?person"}))
+//				.project("predicate")
+//				.with(new LeftJoin());
+
+//		DataStream<SolutionMapping> sm3 = sm1
+//				.keyBy(new JoinKeySelector(new String[]{"?person"}))
+//				.coGroup(sm2.keyBy(new JoinKeySelector(new String[]{"?person"})))
+//				.where(new JoinKeySelector(new String[]{"?person"}))
+//				.equalTo(new JoinKeySelector(new String[]{"?person"}))
+//				.fields("predicate")
+//				.with(new LeftJoin());
